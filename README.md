@@ -1,10 +1,10 @@
 # Godot Level Graph
 
-Godot addon for level organization and room transitions using Area2D nodes.
+Godot addon for level organization and room transitions using Area2D nodes, inspired by Nathan Hoad's [Location Manager](https://www.youtube.com/watch?v=_l3yTp9JOOg).
 
 This is a mirror of the addon in my game project, so I won't be actively maintaining it. Feel free to fork and modify it to your needs.
 
-![alt text](.github/preview.png)
+![Preview](.github/preview.png)
 
 ## Setup
 
