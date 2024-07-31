@@ -1,6 +1,6 @@
 @icon("res://addons/level_graph/assets/exit-svgrepo-com.svg")
 @tool
-extends Area2D
+class_name Exit extends Area2D
 
 const LevelData := preload("res://addons/level_graph/core/level_data.gd")
 const LevelGraphInterface := preload("res://addons/level_graph/core/level_graph_interface.gd")

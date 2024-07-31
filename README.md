@@ -17,7 +17,7 @@ This is a mirror of the addon in my game project, so I won't be actively maintai
 7. Setup your code. Use the `LevelGraph` singleton to get information about the levels and exits.
 
    ```gdscript
-   # Player.gd - Must be a body or area
+   # player.gd - Must be a body or area
 
    func _ready():
      LevelGraph.set_player(self)
