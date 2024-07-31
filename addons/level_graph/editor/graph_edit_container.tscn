@@ -1,0 +1,112 @@
+[gd_scene load_steps=7 format=3 uid="uid://cwht4t7u8eleq"]
+
+[ext_resource type="Script" path="res://addons/level_graph/editor/graph_edit_container.gd" id="1_kodqf"]
+[ext_resource type="Texture2D" uid="uid://dutohix147kww" path="res://addons/level_graph/assets/reload-circular-arrow-svgrepo-com.svg" id="2_5h20v"]
+
+[sub_resource type="SystemFont" id="SystemFont_gli3f"]
+font_names = PackedStringArray("Fira Code")
+font_weight = 500
+subpixel_positioning = 0
+
+[sub_resource type="GDScript" id="GDScript_fs0tc"]
+script/source = "@tool
+extends GraphEdit
+
+@export var graph_edit_container: Control
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if graph_edit_container.on_mouse_down(event.position):
+					accept_event()
+			else:
+				graph_edit_container.on_mouse_up(event.position)
+"
+
+[sub_resource type="SystemFont" id="SystemFont_kqfg3"]
+font_names = PackedStringArray("Fira Code")
+subpixel_positioning = 0
+
+[sub_resource type="GDScript" id="GDScript_hmni6"]
+script/source = "@tool
+extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	visible = not ProjectSettings.get_setting(\"level_graph/general/auto_refresh_levels\", false)
+	
+	ProjectSettings.settings_changed.connect(func():
+		visible = not ProjectSettings.get_setting(\"level_graph/general/auto_refresh_levels\", false)
+	)
+"
+
+[node name="GraphEditContainer" type="VBoxContainer"]
+clip_contents = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 478.0
+offset_bottom = 330.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_kodqf")
+font = SubResource("SystemFont_gli3f")
+
+[node name="GraphEdit" type="GraphEdit" parent="." node_paths=PackedStringArray("graph_edit_container")]
+unique_name_in_owner = true
+show_behind_parent = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+minimap_enabled = false
+script = SubResource("GDScript_fs0tc")
+graph_edit_container = NodePath("..")
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphEdit"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="GraphEdit/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphEdit/MarginContainer/MarginContainer2"]
+z_index = 999
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="HBoxContainer" parent="GraphEdit/MarginContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ReloadLevelsButton" type="Button" parent="GraphEdit/MarginContainer/MarginContainer2/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_kqfg3")
+text = "Reload levels"
+icon = ExtResource("2_5h20v")
+script = SubResource("GDScript_hmni6")
+
+[node name="Print" type="Button" parent="GraphEdit/MarginContainer/MarginContainer2/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_kqfg3")
+text = "Debug Level Data"
+
+[connection signal="pressed" from="GraphEdit/MarginContainer/MarginContainer2/MarginContainer/VBoxContainer/ReloadLevelsButton" to="." method="_on_reload_levels"]
+[connection signal="pressed" from="GraphEdit/MarginContainer/MarginContainer2/MarginContainer/VBoxContainer/Print" to="." method="_on_print_level_data"]

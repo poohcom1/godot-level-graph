@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://4xby2millxj2"]
+
+[ext_resource type="Script" path="res://addons/level_graph/editor/level_graph_element.gd" id="1_1qq6h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x3yxj"]
+bg_color = Color(0.171875, 0.162476, 0.162476, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="LevelGraphElement" type="GraphElement"]
+custom_minimum_size = Vector2(120, 80)
+resizable = true
+script = ExtResource("1_1qq6h")
+
+[node name="Panel" type="Panel" parent="."]
+modulate = Color(0.745098, 0.745098, 0.745098, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x3yxj")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
