@@ -1,8 +1,10 @@
 # Godot Level Graph
 
-Godot addon for level organization and room transitions using Area2D nodes, inspired by Nathan Hoad's [Location Manager](https://www.youtube.com/watch?v=_l3yTp9JOOg). This addon is designed specifically for 2D side-scrollers and metroidvanias with loosely connected rooms as opposed to a strict grid-like map.
+A Godot addon for level organization and room transitions using Area2D nodes, inspired by Nathan Hoad's [Location Manager](https://www.youtube.com/watch?v=_l3yTp9JOOg).
 
-This is a mirror of the addon in my game project, so I won't be actively maintaining it. Feel free to fork and modify it to your needs.
+Designed specifically for 2D side-scrollers and metroidvanias with loosely connected rooms as opposed to a strict grid-like map.
+
+This is a mirror of the addon in my game project, so I won't be actively maintaining it. Feel free to fork and upload to the asset library if you want.
 
 ![Preview](.github/preview.png)
 
