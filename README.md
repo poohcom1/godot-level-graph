@@ -40,3 +40,11 @@ This is a mirror of the addon in my game project, so I won't be actively maintai
      player.global_position = LevelGraph.get_exit_node_spawn_position(entry)
      player.enter_level(entry.orientation) # For animating entry
    ```
+
+## Settings
+
+| Setting             | Description                                                                       |
+| ------------------- | --------------------------------------------------------------------------------- |
+| Root Directory      | The folder where your level scenes are stored. Set this to speed up level loading |
+| Group Levels        | Group levels in the editor by parent directory                                    |
+| Auto refresh levels | Automatically reload levels on save                                               |

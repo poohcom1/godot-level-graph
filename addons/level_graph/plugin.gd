@@ -61,8 +61,6 @@ func _enter_tree() -> void:
 	ProjectSettings.set_as_basic("level_graph/general/group_levels", true)
 	ProjectSettings.set_as_basic("level_graph/general/root_directory", true)
 	ProjectSettings.set_as_basic("level_graph/general/auto_refresh_levels", true)
-	ProjectSettings.set_as_basic("level_graph/runtime/load_level_data", true)
-	ProjectSettings.set_as_basic("level_graph/runtime/cache_level_data", true)
 	ProjectSettings.set_as_internal("level_graph/data/connections", true)
 	ProjectSettings.set_as_internal("level_graph/data/levels_cache", true)
 	ProjectSettings.set_as_internal("level_graph/data/_editor", true)
