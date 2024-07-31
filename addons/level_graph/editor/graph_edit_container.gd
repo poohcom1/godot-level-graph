@@ -52,38 +52,40 @@ func update_data(connection_data: ConnectionData, editor_data: EditorData, level
 	var frames := {}
 	for level in level_data.levels:
 		var frame: GraphFrame
-		if frames.has(level.directory):
-			frame = frames[level.directory]
-		else:
-			frame = GraphFrame.new()
-			var color_picker := ColorPickerButton.new()
-			color_picker.edit_alpha = false
-			color_picker.color_changed.connect(func(c: Color):
-				frame.tint_color_enabled = true
-				frame.tint_color = Color(c.r, c.g, c.b, c.a / 2)
-				editor_data.set_dir_color(level.directory, c)
-				editor_updated.emit(editor_data)
-			)
-			
-			var color := editor_data.get_dir_color(level.directory)
-			if color != Color.BLACK:
-				frame.tint_color_enabled = true
-				frame.tint_color = Color(color.r, color.g, color.b, color.a / 2)
-				color_picker.color = color
-			
-			color_picker.custom_minimum_size = Vector2(32, 32)
-			frame.get_titlebar_hbox().add_child(color_picker)
-			frame.name = level.directory
-			frame.title = level.directory
-			frames[level.directory] = frame
-			graph_edit.add_child(frame)
+		if ProjectSettings.get_setting("level_graph/general/group_levels", false):
+			if frames.has(level.directory):
+				frame = frames[level.directory]
+			else:
+				frame = GraphFrame.new()
+				var color_picker := ColorPickerButton.new()
+				color_picker.edit_alpha = false
+				color_picker.color_changed.connect(func(c: Color):
+					frame.tint_color_enabled = true
+					frame.tint_color = Color(c.r, c.g, c.b, c.a / 2)
+					editor_data.set_dir_color(level.directory, c)
+					editor_updated.emit(editor_data)
+				)
+				
+				var color := editor_data.get_dir_color(level.directory)
+				if color != Color.BLACK:
+					frame.tint_color_enabled = true
+					frame.tint_color = Color(color.r, color.g, color.b, color.a / 2)
+					color_picker.color = color
+				
+				color_picker.custom_minimum_size = Vector2(32, 32)
+				frame.get_titlebar_hbox().add_child(color_picker)
+				frame.name = level.directory
+				frame.title = level.directory
+				frames[level.directory] = frame
+				graph_edit.add_child(frame)
 		
 		var graph_el: BaseLevelElement = LevelElementScene.instantiate()
 		graph_el.name = level.name
 		graph_el.set_text(level.name)
 		level_elements[level.uid] = graph_el
 		graph_edit.add_child(graph_el)
-		graph_edit.attach_graph_element_to_frame.call_deferred(graph_el.name, frame.name)
+		if frame:
+			graph_edit.attach_graph_element_to_frame.call_deferred(graph_el.name, frame.name)
 		
 		graph_el.dragged.connect(func(from: Vector2, to: Vector2):
 			editor_data.set_level_model(level.uid, to, null)

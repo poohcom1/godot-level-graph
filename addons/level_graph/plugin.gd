@@ -30,6 +30,9 @@ func _enter_tree() -> void:
 	if not ProjectSettings.has_setting("level_graph/general/root_directory"):
 		ProjectSettings.set_setting("level_graph/general/root_directory", "res://")
 		ProjectSettings.set_initial_value("level_graph/general/root_directory", "res://")
+	if not ProjectSettings.has_setting("level_graph/general/group_levels"):
+		ProjectSettings.set_setting("level_graph/general/group_levels", false)
+		ProjectSettings.set_initial_value("level_graph/general/group_levels", false)
 	if not ProjectSettings.has_setting("level_graph/general/auto_refresh_levels"):
 		ProjectSettings.set_setting("level_graph/general/auto_refresh_levels", false)
 		ProjectSettings.set_initial_value("level_graph/general/auto_refresh_levels", false)
@@ -55,6 +58,7 @@ func _enter_tree() -> void:
 		"hint": PROPERTY_HINT_DIR,
 		"hint_string": ""
 	})
+	ProjectSettings.set_as_basic("level_graph/general/group_levels", true)
 	ProjectSettings.set_as_basic("level_graph/general/root_directory", true)
 	ProjectSettings.set_as_basic("level_graph/general/auto_refresh_levels", true)
 	ProjectSettings.set_as_basic("level_graph/runtime/load_level_data", true)
