@@ -228,13 +228,6 @@ var ORIENTATIONS_VECTORS := {
 	LevelData.ExitOrientation.Right: Vector2(1, 0.5)
 }
 
-var ORIENTATIONS_SYMBOLS := {
-	LevelData.ExitOrientation.Top: "↑",
-	LevelData.ExitOrientation.Bottom: "↓",
-	LevelData.ExitOrientation.Left: "←",
-	LevelData.ExitOrientation.Right: "→"
-}
-
 var ORIENTATION_TEXT_OFFSET := {
 	LevelData.ExitOrientation.Top: Vector2(0, 1.5),
 	LevelData.ExitOrientation.Bottom: Vector2(0, -3),
@@ -249,9 +242,9 @@ func get_arrow(orientation, direction) -> String:
 		LevelData.ExitOrientation.Bottom:
 			return "↱" if direction == LevelData.Direction.Right else "↰"
 		LevelData.ExitOrientation.Left:
-			return "←"
-		LevelData.ExitOrientation.Right:
 			return "→"
+		LevelData.ExitOrientation.Right:
+			return "←"
 	return "?"
 
 func _get_exit_positions() -> Dictionary:
