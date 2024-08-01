@@ -76,19 +76,24 @@ static func get_singleton(node: Node) -> Self:
 	return node.get_node("/root/LevelGraph")
 
 func _ready() -> void:
-	if Engine.is_editor_hint() and not ProjectSettings.get_setting("level_graph/general/auto_refresh_levels", false):
-		return
-	load_graph_data()
-	if ProjectSettings.get_setting("level_graph/runtime/load_level_data", false):
-		load_level_data()
-
-	if not Engine.is_editor_hint() and ClassDB.class_exists("CSharpScript"):
-		var csharp_script: Script = load("res://addons/level_graph/core/LevelGraphInterface.cs")
-		var csharp_instance: Node = csharp_script.new(self)
-		add_child(csharp_instance)
-	
 	if Engine.is_editor_hint():
+		# In editor
+		if ProjectSettings.get_setting("level_graph/general/auto_refresh_levels", false):
+			load_graph_data()
+			load_level_data()
 		ProjectSettings.settings_changed.connect(_reload_level_data)
+	else:
+		# In runtime
+		load_graph_data()
+		if ProjectSettings.get_setting("level_graph/runtime/load_level_data", false):
+			load_level_data()
+
+		# Setup C# singleton
+		if ClassDB.class_exists("CSharpScript"):
+			var csharp_script: Script = load("res://addons/level_graph/core/LevelGraphInterface.cs")
+			var csharp_instance: Node = csharp_script.new(self)
+			add_child(csharp_instance)
+
 
 func load_graph_data() -> void:
 	connection_data.deserialize(ProjectSettings.get_setting("level_graph/data/connections", []))
