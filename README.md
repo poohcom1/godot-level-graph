@@ -31,13 +31,13 @@ This is a mirror of the addon in my game project, so I won't be actively maintai
      LevelGraph.level_changed.connect(_on_level_change)
 
    func _on_level_change(from_level: String, from_exit: int) -> void:
-     var exit: Exit = LevelGraph.get_exit_node_in_level(from_exit)
+     var exit: Exit = await LevelGraph.get_exit_node_in_level(from_exit)
      player.leave_level(exit.orientation) # For animating exit
 
      var dest: Dictionary = LevelGraph.get_destination(from_level, from_exit)
      get_tree().change_scene_to_file(dest["level"]) # Or whatever method you use to transition scenes
 
-     var entry: Exit = LevelGraph.get_exit_node_in_level(dest["exit"])
+     var entry: Exit = await LevelGraph.get_exit_node_in_level(dest["exit"])
 
      player.global_position = LevelGraph.get_exit_node_spawn_position(entry) # Uses the Exit's raycast to find the ground position when the Exit is Left/Right
      player.enter_level(entry.orientation) # For animating entry
