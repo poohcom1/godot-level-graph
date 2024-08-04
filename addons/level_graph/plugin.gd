@@ -5,7 +5,6 @@ extends EditorPlugin
 const GraphEditContainerScn = preload("res://addons/level_graph/editor/graph_edit_container.tscn")
 const GraphEditContainer = preload("res://addons/level_graph/editor/graph_edit_container.gd")
 const LevelGraphInterface := preload("res://addons/level_graph/core/level_graph_interface.gd")
-const Exit := preload("res://addons/level_graph/nodes/exit.gd")
 const ExitIcon := preload("res://addons/level_graph/assets/exit-svgrepo-com.svg")
 
 const ConnectionData := preload("res://addons/level_graph/core/connection_data.gd")

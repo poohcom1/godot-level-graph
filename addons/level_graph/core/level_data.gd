@@ -1,6 +1,5 @@
 ## LevelData - Data extracted from levels at runtime
 
-const Exit: Script = preload("res://addons/level_graph/nodes/exit.gd")
 const ExitScriptPath := "res://addons/level_graph/nodes/exit.gd"
 
 enum ExitOrientation { 

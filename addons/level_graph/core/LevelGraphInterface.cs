@@ -1,6 +1,7 @@
 namespace Addons.LevelGraph;
 
 using System;
+using System.Threading.Tasks;
 using Godot;
 
 // Bridge; see level_data.gd
@@ -53,8 +54,9 @@ public partial class LevelGraphInterface : Node {
         return ((string)result["level"], (int)result["exit"]);
     }
 
-    public Node2D? GetExitNodeInLevel(int exitId) {
-        return (Node2D)GetSingleton().Call("get_exit_node_in_level", exitId);
+    public async Task<Node2D?> GetExitNodeInLevel(int exitId) {
+        var res = GetSingleton().Call("get_exit_node_in_level", exitId).AsGodotObject();
+        return (Node2D)(await ToSignal(res, "completed"))[0];
     }
 
     public Vector2 GetExitNodeSpawnPosition(Node2D? exitNode) {

@@ -7,8 +7,6 @@ const Self := preload("res://addons/level_graph/core/level_graph_interface.gd")
 const ConnectionData := preload("res://addons/level_graph/core/connection_data.gd")
 const EditorData := preload("res://addons/level_graph/core/editor_data.gd")
 const LevelData := preload("res://addons/level_graph/core/level_data.gd")
-const Exit: Script = preload("res://addons/level_graph/nodes/exit.gd")
-
 
 
 const MAX_THREADS := 16
@@ -51,6 +49,10 @@ func get_exit_node_in_level(exit_id: int) -> Exit:
 	var exits = Exit.get_exits(self)
 	for exit in exits:
 		if exit.id == exit_id:
+			if not exit.is_exit_ready:
+				await exit.exit_ready
+			else:
+				await get_tree().process_frame
 			return exit
 	return null
 
