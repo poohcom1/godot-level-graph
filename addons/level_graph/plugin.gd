@@ -13,10 +13,13 @@ const LevelData := preload("res://addons/level_graph/core/level_data.gd")
 
 const LevelGraphEnginePath := "res://addons/level_graph/core/level_graph_interface.gd"
 
+const LevelGraphExportPlugin := preload("res://addons/level_graph/export/level_graph_export_plugin.gd")
+
 # Constants
 const EXIT_CLASS_NAME = "Exit"
 
 var graph_editor_container: GraphEditContainer
+var export_plugin := LevelGraphExportPlugin.new()
 
 func _enable_plugin() -> void:
 	add_autoload_singleton("LevelGraph", LevelGraphEnginePath)
@@ -69,6 +72,8 @@ func _enter_tree() -> void:
 	
 	EditorInterface.get_editor_main_screen().add_child(graph_editor_container)
 	graph_editor_container.hide()
+	
+	add_export_plugin(export_plugin)
 
 
 func _ready():
@@ -87,6 +92,8 @@ func _ready():
 func _exit_tree() -> void:
 	remove_custom_type(EXIT_CLASS_NAME)
 	graph_editor_container.queue_free()
+	
+	remove_export_plugin(export_plugin)
 
 func _apply_changes() -> void:
 	if not ProjectSettings.get_setting("level_graph/general/auto_refresh_levels", false):

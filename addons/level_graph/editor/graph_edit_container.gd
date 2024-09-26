@@ -96,6 +96,7 @@ func update_data(connection_data: ConnectionData, editor_data: EditorData, level
 			editor_updated.emit(editor_data)
 		)
 		graph_el.element_selected.connect(func():
+			EditorInterface.set_main_screen_editor("2D")
 			EditorInterface.open_scene_from_path(ResourceUID.get_id_path(ResourceUID.text_to_id(level.uid)))
 		)
 		

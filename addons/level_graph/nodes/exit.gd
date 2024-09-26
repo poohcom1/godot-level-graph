@@ -44,7 +44,6 @@ func _ready() -> void:
 	for i in range(1, 33):
 		set_collision_mask_value(i, true)
 		set_collision_layer_value(i, true)
-		
 		raycast.set_collision_mask_value(i, true)
 	
 	collision_shape.debug_color = Color.YELLOW
@@ -70,11 +69,19 @@ func _ready() -> void:
 		body_entered.connect(_on_player_enter)
 		area_entered.connect(_on_player_enter)
 		
-		await get_tree().process_frame
-		if (orientation == LevelData.ExitOrientation.Right or orientation == LevelData.ExitOrientation.Left) and not raycast.get_collider() is TileMapLayer:
-			push_error("Exit is not colliding with tilemap.")
 		
-		_collision_point = raycast.get_collision_point()
+		if orientation == LevelData.ExitOrientation.Right or orientation == LevelData.ExitOrientation.Left:
+			var raycast_hit = null
+			for i in range(50):
+				raycast_hit = raycast.get_collider()
+				if raycast_hit is TileMapLayer:
+					break
+				await get_tree().process_frame
+
+			if raycast_hit is TileMapLayer:
+				_collision_point = raycast.get_collision_point()
+			else:
+				printerr("Exit is not colliding with tilemap. Found: " + str(raycast_hit))
 		
 	exit_ready.emit()
 	is_exit_ready = true

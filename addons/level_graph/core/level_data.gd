@@ -25,6 +25,10 @@ func deserialize(data: Array):
 
 static func empty() -> Array:
 	return []
+	
+func convert_to_export() -> void:
+	for level in levels:
+		level.convert_to_export()
 
 #region Getters
 func get_exit_orientation(level_uid: String, exit: int) -> int:
@@ -149,7 +153,10 @@ class Level:
 		exits = data["exits"]
 		exit_orientations = data["exit_orientations"]
 		exit_directions = data["exit_directions"]
+	
+	func convert_to_export() -> void:
+		uid = ResourceUID.get_id_path(ResourceUID.text_to_id(uid))
 
 	func _to_string() -> String:
-		return "Level: " + name + ", Exits: " + str(exits) + ", Orientations: " + str(exit_orientations) + ", Direction: " + str(exit_directions)
+		return uid + ": " + name + ", Exits: " + str(exits) + ", Orientations: " + str(exit_orientations) + ", Direction: " + str(exit_directions)
 #endregion

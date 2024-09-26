@@ -8,6 +8,10 @@ func get_destination(scene: String, exit: int) -> Array:
 	for conn in connections:
 		if conn.has_exit(scene, exit):
 			return conn.other_exit(scene, exit)
+
+	# Error
+	printerr("[Level Graph] Could not find destination for %s, exit: %d" % [scene, exit])
+
 	return []
 #endregion
 
@@ -71,7 +75,15 @@ func deserialize(data_dict: Array) -> void:
 		
 		connections.append(conn)
 
+func convert_to_export() -> void:
+	for conn in connections:
+		conn.convert_to_export()
 
+func _to_string() -> String:
+	var text = ""
+	for conn in connections:
+		text += str(conn) + "\n"
+	return text
 #endregion
 #region Subclasses
 class Connection:
@@ -96,4 +108,11 @@ class Connection:
 	func equals(other: Connection) -> bool:
 		return from_level == other.from_level and from_exit == other.from_exit and to_level == other.to_level and to_exit == other.to_exit \
 			or from_level == other.to_level and from_exit == other.to_exit and to_level == other.from_level and to_exit == other.from_exit
+
+	func convert_to_export() -> void:
+		var from_level_uid = ResourceUID.text_to_id(from_level)
+		from_level = ResourceUID.get_id_path(from_level_uid)
+		var to_level_uid = ResourceUID.text_to_id(to_level)
+		to_level = ResourceUID.get_id_path(to_level_uid)
+
 #endregion

@@ -7,6 +7,7 @@ const Self := preload("res://addons/level_graph/core/level_graph_interface.gd")
 const ConnectionData := preload("res://addons/level_graph/core/connection_data.gd")
 const EditorData := preload("res://addons/level_graph/core/editor_data.gd")
 const LevelData := preload("res://addons/level_graph/core/level_data.gd")
+const Exit := preload("res://addons/level_graph/nodes/exit.gd")
 
 
 const MAX_THREADS := 16
@@ -35,11 +36,20 @@ func is_player(node: Node):
 
 
 func change_level(from_scene: Node, from_exit: int) -> void:
-	var scene_uid = ResourceUID.id_to_text(ResourceLoader.get_resource_uid(from_scene.scene_file_path))
-	level_changed.emit(scene_uid, from_exit)
+	var uid = ResourceLoader.get_resource_uid(from_scene.scene_file_path)
+	if uid == -1:
+		level_changed.emit(from_scene.scene_file_path, from_exit)
+	else:
+		var scene_uid = ResourceUID.id_to_text(uid)
+		level_changed.emit(scene_uid, from_exit)
 
 func get_destination(from_level: String, from_exit: int) -> Dictionary:
 	var dest := connection_data.get_destination(from_level, from_exit)
+	if len(dest) < 2:
+		return {
+			"level": from_level,
+			"exit": from_exit
+		}
 	return {
 		"level": dest[0],
 		"exit": dest[1]
@@ -80,21 +90,26 @@ static func get_singleton(node: Node) -> Self:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		# In editor
-		if ProjectSettings.get_setting("level_graph/general/auto_refresh_levels", false):
-			load_graph_data()
-			load_level_data()
+		load_graph_data()
+		load_level_data()
 		ProjectSettings.settings_changed.connect(_reload_level_data)
 	else:
 		# In runtime
 		load_graph_data()
-		if ProjectSettings.get_setting("level_graph/runtime/load_level_data", false):
-			load_level_data()
+		load_level_data()
 
 		# Setup C# singleton
 		if ClassDB.class_exists("CSharpScript"):
+			print_rich("[Level Graph][color=white] Detected dotnet project.")
 			var csharp_script: Script = load("res://addons/level_graph/core/LevelGraphInterface.cs")
 			var csharp_instance: Node = csharp_script.new(self)
 			add_child(csharp_instance)
+	
+	if not OS.has_feature("editor"):
+		print_rich("[Level Graph][color=white] Loaded connection data: ")
+		print(connection_data)
+		print_rich("[Level Graph][color=white] Loaded level data: ")
+		print(level_data)
 
 
 func load_graph_data() -> void:
@@ -118,17 +133,30 @@ func load_level_data() -> void:
 	
 	if not Engine.is_editor_hint():
 		# In runtime
-		if ProjectSettings.get_setting("level_graph/runtime/cache_level_data"):
-			var cache = ProjectSettings.get_setting("level_graph/data/levels_cache", LevelData.empty())
-			if len(cache) > 0:
-				level_data.deserialize(cache)
-				print_rich("[Level Graph][color=white] Loaded level data from cache.")
-				return
-			else:
-				push_error("[Level Graph] No cache found, will load as normal. Please run 'Reload levels' or save in the editor if you have auto refresh on.")
+		var cache = ProjectSettings.get_setting("level_graph/data/levels_cache", LevelData.empty())
+		if len(cache) > 0:
+			level_data.deserialize(cache)
+			print_rich("[Level Graph][color=white] Loaded level data from cache.")
+			return
 		else:
 			print_rich("[Level Graph][color=white] Generating level data from scenes.")
 	
+	var root_dir: String = ProjectSettings.get_setting("level_graph/general/root_directory", "res://")
+	
+	var scene_files: Array[String] = []
+	_recurse_dir(root_dir, 99, func(scene_file: String): scene_files.append(scene_file))
+	
+	level_data = generate_level_data()
+	
+	if ProjectSettings.get_setting("level_graph/runtime/cache_level_data", false):
+		ProjectSettings.set_setting("level_graph/data/levels_cache", level_data.serialize())
+	else:
+		ProjectSettings.set_setting("level_graph/data/levels_cache", LevelData.empty())
+	if Engine.is_editor_hint():
+		ProjectSettings.save()
+
+static func generate_level_data() -> LevelData:
+	var level_data := LevelData.new()
 	var root_dir: String = ProjectSettings.get_setting("level_graph/general/root_directory", "res://")
 	
 	var scene_files: Array[String] = []
@@ -160,13 +188,7 @@ func load_level_data() -> void:
 			for level in levels:
 				if level and len(level.exits) > 0:
 					level_data.levels.append(level)
-	
-	if ProjectSettings.get_setting("level_graph/runtime/cache_level_data", false):
-		ProjectSettings.set_setting("level_graph/data/levels_cache", level_data.serialize())
-	else:
-		ProjectSettings.set_setting("level_graph/data/levels_cache", LevelData.empty())
-	if Engine.is_editor_hint():
-		ProjectSettings.save()
+	return level_data
 
 var _previous_cache_level_data = ProjectSettings.get_setting("level_graph/runtime/cache_level_data", false)
 func _reload_level_data():
@@ -188,4 +210,3 @@ static func _recurse_dir(path: String, max_level, callback: Callable, level = 0)
 			callback.call(path.path_join(file))
 	for subdir in dir.get_directories():
 		_recurse_dir(path.path_join(subdir), max_level, callback, level + 1)
-
