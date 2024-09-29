@@ -22,7 +22,7 @@ This is a mirror of the addon in my game project, so I won't be actively maintai
    # player.gd - Must be a body or area
 
    func _ready():
-     await get_tree().create_timer(0.5) # Prevent looping as the player touches the exit. Change this code to something more robust like waiting for the enter animation to finish
+     await get_tree().create_timer(0.5).timeout # Prevent looping as the player touches the exit. Change this code to something more robust like waiting for the enter animation to finish
      LevelGraph.set_player(self)
 
    # stage_manager.gd - Whatever script you want to manage level changes
