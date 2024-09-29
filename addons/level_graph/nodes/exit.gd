@@ -21,7 +21,12 @@ enum Id { A, B, C, D, E, F, G }
 		return _collision_shape_size
 
 @export var id: Id = -1
-@export var orientation: LevelData.ExitOrientation = LevelData.ExitOrientation.Right
+@export var orientation: LevelData.ExitOrientation:
+	set(value):
+		orientation = value
+		notify_property_list_changed()
+	get:
+		return orientation
 @export var direction: LevelData.Direction = LevelData.Direction.Right
 
 var is_exit_ready := false
